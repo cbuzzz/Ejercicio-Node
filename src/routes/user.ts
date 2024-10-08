@@ -20,7 +20,7 @@ router.post('/', async(req, res) => {
     return res.json(data);
 })
 
-router.post('/addExperiencias/:idUser/:idExp', async(req, res) => {
+router.post('/addExperiencies/:idUser/:idExp', async(req, res) => {
     const data = await userServices.getEntries.addExperiencies(req.params.idUser,req.params.idExp)
     return res.json(data);
 })

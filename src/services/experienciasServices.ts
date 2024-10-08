@@ -11,7 +11,7 @@ export const getEntries = {
         return await experienciasofDB.findById(id).populate('owner').populate('participants');
     },
     addParticipant: async(idExp:string,idPart:string)=>{
-        return await experienciasofDB.findByIdAndUpdate(idExp,{$addToSet:{participants:idPart}});
+        return await experienciasofDB.findByIdAndUpdate(idExp,{$push:{participants:idPart}});
     },
     delParticipant: async(idExp:string,idPart:string)=>{
         return await experienciasofDB.findByIdAndDelete(idExp,{$pull:{participants:idPart}});
