@@ -24,6 +24,10 @@ router.post('/addExperiencies/:idUser/:idExp', async(req, res) => {
     const data = await userServices.getEntries.addExperiencies(req.params.idUser,req.params.idExp)
     return res.json(data);
 })
+router.delete('/delExperiencies/:idUser/:idExp', async(req, res) => {
+    const data = await userServices.getEntries.delExperiencies(req.params.idUser,req.params.idExp)
+    return res.json(data);
+})
 
 router.put('/:id', async(req, res) => {
     const data = await userServices.getEntries.update(req.params.id,req.body)
