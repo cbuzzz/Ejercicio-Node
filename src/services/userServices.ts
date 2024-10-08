@@ -12,7 +12,7 @@ export const getEntries = {
         return await usersofDB.findByIdAndUpdate(idUser,{$push:{experiencies:idExp}});
     },
     delExperiencies: async(idUser:string,idExp:string)=>{
-        return await usersofDB.findByIdAndDelete(idUser,{$pull:{experiencies:idExp}});
+        return await usersofDB.findByIdAndUpdate(idUser,{$pull:{experiencies:idExp}});
     },
     create: async(entry:object)=>{
         return await usersofDB.create(entry);
