@@ -15,11 +15,14 @@ export const getEntries = {
     findByParticipant: async (participantId: string) => {
         return await experienciasofDB.find({ participants: participantId }).populate('participants');
     },
+    // Agregar un participante a una experiencia
     addParticipant: async (idExp: string, idPart: string) => {
-        return await experienciasofDB.findByIdAndUpdate(idExp, { $push: { participants: idPart } });
+        // Actualizar el documento para agregar el participante al array "participants" y devolver el documento actualizado
+        return await experienciasofDB.findByIdAndUpdate(idExp, { $push: { participants: idPart } }, { new: true });
     },
+    // Eliminar un participante de una experiencia
     delParticipant: async (idExp: string, idPart: string) => {
-        return await experienciasofDB.findByIdAndUpdate(idExp, { $pull: { participants: idPart } });
+        return await experienciasofDB.findByIdAndUpdate(idExp, { $pull: { participants: idPart } }, { new: true });
     },
     create: async (entry: object) => {
         return await experienciasofDB.create(entry);
@@ -30,4 +33,4 @@ export const getEntries = {
     delete: async (id: string) => {
         return await experienciasofDB.findByIdAndDelete(id);
     }
-}
+};

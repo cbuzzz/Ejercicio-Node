@@ -11,18 +11,19 @@ export const getEntries = {
     findByName: async (name: string) => {
         return await usersofDB.findOne({ name });
     },
+    // Agregar una experiencia al array del usuario sin duplicados
     addExperiencies: async (idUser: string, idExp: string) => {
-        return await usersofDB.findByIdAndUpdate(idUser, { $push: { experiencies: idExp } });
+        return await usersofDB.findByIdAndUpdate(idUser, { $addToSet: { experiencies: idExp } }, { new: true });
     },
+    // Eliminar una experiencia del array del usuario
     delExperiencies: async (idUser: string, idExp: string) => {
-        return await usersofDB.findByIdAndUpdate(idUser, { $pull: { experiencies: idExp } });
+        return await usersofDB.findByIdAndUpdate(idUser, { $pull: { experiencies: idExp } }, { new: true });
     },
     create: async (entry: object) => {
         return await usersofDB.create(entry);
     },
     update: async (id: string, body: object) => {
-        console.log(body);
-        return await usersofDB.findByIdAndUpdate(id, body, { $new: true });
+        return await usersofDB.findByIdAndUpdate(id, body, { new: true });
     },
     delete: async (id: string) => {
         return await usersofDB.findByIdAndDelete(id);
