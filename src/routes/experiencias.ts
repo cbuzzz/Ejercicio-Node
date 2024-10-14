@@ -1,48 +1,88 @@
-import express from 'express'
-import * as experienciasServices from '../services/experienciasServices'
+import express from 'express';
+import * as experienciasServices from '../services/experienciasServices';
 
-//import toNewUser from '../extras/utils'
+const router = express.Router();
 
-const router = express.Router()
+// Ruta para obtener todas las experiencias o filtrar por propietario (owner) o por participante (participant)
+router.get('/', async (req, res) => {
+    const { owner, participant } = req.query;
 
-router.get('/', async(_req, res) => {
-    const data = await experienciasServices.getEntries.getAll()
-    return res.json(data);
-})
+    try {
+        let experiencias = [];
 
-router.get('/:id', async(req, res) => {
-    const data = await experienciasServices.getEntries.findById(req.params.id)
-    return res.json(data);
-})
+        if (typeof owner === 'string') {
+            experiencias = await experienciasServices.getEntries.findByOwner(owner);
+        } else if (typeof participant === 'string') {
+            experiencias = await experienciasServices.getEntries.findByParticipant(participant);
+        } else {
+            experiencias = await experienciasServices.getEntries.getAll();
+        }
 
-router.get('/user/:id', async(req, res) => {
-    const data = await experienciasServices.getEntries.findUserById(req.params.id)
-    return res.json(data);
-})
+        return res.json(experiencias);
+    } catch (error) {
+        return res.status(500).json({ message: 'Error al obtener las experiencias' });
+    }
+});
 
-router.post('/', async(req, res) => {
-    const data = await experienciasServices.getEntries.create(req.body)
-    return res.json(data);
-})
 
-router.post('/addParticipant/:idExp/:idPart', async(req, res) => {
-    const data = await experienciasServices.getEntries.addParticipant(req.params.idExp,req.params.idPart)
-    return res.json(data);
-})
+// Ruta para obtener una experiencia por ID
+router.get('/:id', async (req, res) => {
+    try {
+        // Buscar una experiencia por ID usando findById
+        const data = await experienciasServices.getEntries.findById(req.params.id);
+        if (!data) {
+            return res.status(404).json({ message: 'Experiencia no encontrada' });
+        }
+        return res.json(data);
+    } catch (error) {
+        return res.status(500).json({ message: 'Error al obtener la experiencia por ID' });
+    }
+});
 
-router.put('/:id', async(req, res) => {
-    const data = await experienciasServices.getEntries.update(req.params.id,req.body)
-    return res.json(data);
-})
+// Ruta para crear una nueva experiencia
+router.post('/', async (req, res) => {
+    try {
+        const data = await experienciasServices.getEntries.create(req.body);
+        return res.status(201).json(data);
+    } catch (error) {
+        return res.status(500).json({ message: 'Error al crear la experiencia' });
+    }
+});
 
-router.delete('/:id', async(req, res) => {
-    const data = await experienciasServices.getEntries.delete(req.params.id)
-    return res.json(data);
-})
+// Ruta para agregar un participante a una experiencia
+router.post('/addParticipant/:idExp/:idPart', async (req, res) => {
+    try {
+        const data = await experienciasServices.getEntries.addParticipant(req.params.idExp, req.params.idPart);
+        return res.json(data);
+    } catch (error) {
+        return res.status(500).json({ message: 'Error al añadir el participante' });
+    }
+});
 
-router.delete('/delParticipant/:idExp/:idPart', async(req, res) => {
-    const data = await experienciasServices.getEntries.delParticipant(req.params.idExp,req.params.idPart)
-    return res.json(data);
-})
+// Ruta para actualizar una experiencia
+router.put('/:id', async (req, res) => {
+    try {
+        const data = await experienciasServices.getEntries.update(req.params.id, req.body);
+        if (!data) {
+            return res.status(404).json({ message: 'Experiencia no encontrada' });
+        }
+        return res.json(data);
+    } catch (error) {
+        return res.status(500).json({ message: 'Error al actualizar la experiencia' });
+    }
+});
 
-export default router
+// Ruta para eliminar una experiencia
+router.delete('/:id', async (req, res) => {
+    try {
+        const data = await experienciasServices.getEntries.delete(req.params.id);
+        if (!data) {
+            return res.status(404).json({ message: 'Experiencia no encontrada' });
+        }
+        return res.json(data);
+    } catch (error) {
+        return res.status(500).json({ message: 'Error al eliminar la experiencia' });
+    }
+});
+
+export default router;

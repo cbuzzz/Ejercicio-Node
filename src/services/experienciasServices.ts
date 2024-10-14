@@ -1,29 +1,33 @@
 import { experienciasofDB } from "../modelos/types_d_experiencias";
 
 export const getEntries = {
-    getAll: async()=>{
-    return await experienciasofDB.find();
+    getAll: async () => {
+        return await experienciasofDB.find();
     },
-    findById: async(id:string)=>{
+    findById: async (id: string) => {
         return await experienciasofDB.findById(id);
     },
-    findUserById: async(id:string)=>{
-        return await experienciasofDB.findById(id).populate('owner').populate('participants');
+    // Método para obtener experiencias por propietario (owner)
+    findByOwner: async (ownerId: string) => {
+        return await experienciasofDB.find({ owner: ownerId }).populate('participants');  // Filtrar por propietario y poblar los participantes
     },
-    addParticipant: async(idExp:string,idPart:string)=>{
-        return await experienciasofDB.findByIdAndUpdate(idExp,{$push:{participants:idPart}});
+    // Obtener experiencias por participante
+    findByParticipant: async (participantId: string) => {
+        return await experienciasofDB.find({ participants: participantId }).populate('participants');
     },
-    delParticipant: async(idExp:string,idPart:string)=>{
-        return await experienciasofDB.findByIdAndDelete(idExp,{$pull:{participants:idPart}});
+    addParticipant: async (idExp: string, idPart: string) => {
+        return await experienciasofDB.findByIdAndUpdate(idExp, { $push: { participants: idPart } });
     },
-    create: async(entry:object)=>{
+    delParticipant: async (idExp: string, idPart: string) => {
+        return await experienciasofDB.findByIdAndUpdate(idExp, { $pull: { participants: idPart } });
+    },
+    create: async (entry: object) => {
         return await experienciasofDB.create(entry);
     },
-    update: async(id:string,body:object)=>{
-        console.log(body);
-        return await experienciasofDB.findByIdAndUpdate(id,body,{$new:true});
+    update: async (id: string, body: object) => {
+        return await experienciasofDB.findByIdAndUpdate(id, body, { new: true });
     },
-    delete: async(id:string)=>{
+    delete: async (id: string) => {
         return await experienciasofDB.findByIdAndDelete(id);
     }
 }
